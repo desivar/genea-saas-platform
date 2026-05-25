@@ -1,55 +1,85 @@
-interface IChicagoBookParams {
-  author?: string;
-  title: string;
-  publisher?: string;
-  pubPlace?: string;
-  pubYear?: string;
-  pageNumbers?: string;
-}
-
-interface IChicagoCensusParams {
-  year: string;
-  state: string;
-  county: string;
-  locality?: string;
-  roll?: string;
-  page?: string;
+interface ICitationParams {
+  // Common Fields
+  title?: string;
+  creator?: string;      // Author, Interviewee, Photographer, or Painter
+  date?: string;         // Publication date, interview date, or creation date
   url?: string;
+  
+  // Specific Context Fields
+  publicationName?: string; // Newspaper title, Magazine title, or Archive collection
+  pubPlace?: string;        // City of publication or Repository location
+  publisher?: string;       // Publisher name or Museum/Archive name
+  pageNumbers?: string;     // Specific pages or item tracking numbers
+  interviewer?: string;     // For oral history tracking
+  formatType?: string;      // e.g., "Oil on canvas", "Digital image", "Audio recording"
 }
 
 export class ChicagoFormatter {
   /**
-   * Generates a standard Chicago Style (17th Edition) Footnote for a Book / Published Record set
-   * Format: Author, *Title* (Place of Publication: Publisher, Year), Page numbers.
+   * Universal router that accepts a source type and outputs a perfect Chicago Manual of Style Footnote
    */
-  static formatBook(params: IChicagoBookParams): string {
-    const { author, title, publisher, pubPlace, pubYear, pageNumbers } = params;
+  static format(type: 'Book' | 'Newspaper' | 'Magazine' | 'Census' | 'OralHistory' | 'Portrait' | 'Custom', params: ICitationParams): string {
+    const { title, creator, date, url, publicationName, pubPlace, publisher, pageNumbers, interviewer, formatType } = params;
     
-    let authorPart = author ? `${author}, ` : '';
-    let pubPart = '';
-    
-    if (pubPlace || publisher || pubYear) {
-      pubPart = ` (${pubPlace ? pubPlace + ': ' : ''}${publisher ? publisher + ', ' : ''}${pubYear || ''})`;
-    }
-    
-    let pagePart = pageNumbers ? `, ${pageNumbers}` : '';
-    
-    return `${authorPart}_${title}_${pubPart}${pagePart}.`;
-  }
+    switch (type) {
+      case 'Book': {
+        const authorPart = creator ? `${creator}, ` : '';
+        const pubPart = (pubPlace || publisher || date) 
+          ? ` (${pubPlace ? pubPlace + ': ' : ''}${publisher ? publisher + ', ' : ''}${date || ''})` 
+          : '';
+        const pagePart = pageNumbers ? `, ${pageNumbers}` : '';
+        return `${authorPart}_${title}_${pubPart}${pagePart}.`;
+      }
 
-  /**
-   * Generates a dynamic layered Chicago Style Footnote for US Federal Census Records
-   * Format: Year U.S. census, County, State, population schedule, locality, page, National Archives microfilm, URL.
-   */
-  static formatCensus(params: IChicagoCensusParams): string {
-    const { year, state, county, locality, roll, page, url } = params;
-    
-    let base = `${year} U.S. census, ${county} County, ${state}, population schedule`;
-    if (locality) base += `, ${locality}`;
-    if (page) base += `, p. ${page}`;
-    if (roll) base += `, National Archives microfilm publication ${roll}`;
-    if (url) base += `; digital image, _Ancestry.com_ (${url})`;
-    
-    return `${base}.`;
+      case 'Newspaper': {
+        // Format: Author, "Article Title," *Newspaper Name* (City, State), Month Day, Year, Page. URL.
+        const authorPart = creator ? `${creator}, ` : '';
+        const titlePart = title ? `"${title}," ` : '';
+        const locationPart = pubPlace ? ` (${pubPlace})` : '';
+        const datePart = date ? `, ${date}` : '';
+        const pagePart = pageNumbers ? `, ${pageNumbers}` : '';
+        const urlPart = url ? `; digital image, (${url})` : '';
+        return `${authorPart}${titlePart}_${publicationName}_${locationPart}${datePart}${pagePart}${urlPart}.`;
+      }
+
+      case 'Magazine': {
+        // Format: Author, "Article Title," *Magazine Name* Volume, no. Issue (Date): Page. URL.
+        const authorPart = creator ? `${creator}, ` : '';
+        const titlePart = title ? `"${title}," ` : '';
+        const datePart = date ? ` (${date})` : '';
+        const pagePart = pageNumbers ? `: ${pageNumbers}` : '';
+        const urlPart = url ? `, ${url}` : '';
+        return `${authorPart}${titlePart}_${publicationName}_${datePart}${pagePart}${urlPart}.`;
+      }
+
+      case 'Census': {
+        const loc = pubPlace ? `, ${pubPlace}` : ''; // e.g. "Cook County, Illinois"
+        const pagePart = pageNumbers ? `, p. ${pageNumbers}` : '';
+        const urlPart = url ? `; digital image, _Ancestry.com_ (${url})` : '';
+        return `${date} U.S. census, population schedule${loc}${pagePart}${urlPart}.`;
+      }
+
+      case 'OralHistory': {
+        // Format: Interviewee, interview by Interviewer, Date, location/transcript info.
+        const speaker = creator || 'Unidentified Interviewee';
+        const team = interviewer ? `interview by ${interviewer}` : 'oral interview';
+        const datePart = date ? `, ${date}` : '';
+        const notes = publicationName ? `, ${publicationName}` : ''; // Collection or location details
+        return `${speaker}, ${team}${datePart}${notes}.`;
+      }
+
+      case 'Portrait': {
+        // Format: Creator, *Title*, Date, Medium, Repository/Owner (Location).
+        const artist = creator ? `${creator}, ` : 'Unknown Artist, ';
+        const medium = formatType ? `, ${formatType}` : '';
+        const repo = publisher ? `, ${publisher}` : '';
+        const loc = pubPlace ? ` (${pubPlace})` : '';
+        return `${artist}_${title}_${medium}${repo}${loc}, dated ${date || 'unknown'}.`;
+      }
+
+      default:
+        // Fallback custom free-text citation if the user wants to paste an Evidence Explained string directly
+        return title || 'Unspecified genealogical source record.';
+    }
   }
 }
