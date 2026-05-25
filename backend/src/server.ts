@@ -3,7 +3,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import { connectDB } from './db.js';
-import memberRoutes from './routes/memberRoutes.js'; // <-- 1. Import your new routes
 
 dotenv.config();
 
@@ -15,11 +14,8 @@ connectDB();
 
 // Security & Parsing Middleware
 app.use(helmet());
-app.use(cors({ origin: 'http://localhost:5173' })); // Allow your Vite frontend to connect
+app.use(cors({ origin: 'http://localhost:5173' })); 
 app.use(express.json());
-
-// 2. Mount your professional genealogy routes
-app.use('/api/members', memberRoutes);
 
 // Main Status Route
 app.get('/api/status', (req: Request, res: Response): void => {
