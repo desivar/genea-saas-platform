@@ -1,25 +1,24 @@
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 export const connectDB = async (): Promise<void> => {
   try {
-    const connString = process.env.MONGO_URI;
-    
-    // 🔒 SAFE DEBUG: This checks the string without leaking your password
-    if (connString) {
-      console.log(`🔎 Debug: MONGO_URI loaded successfully. Length: ${connString.length} characters.`);
-      console.log(`🔎 Debug: Starts with: "${connString.substring(0, 15)}..."`);
-    } else {
-      console.log('🔎 Debug: MONGO_URI is completely UNDEFINED inside db.ts!');
+    const uri = process.env.MONGODB_URI;
+
+    if (!uri) {
+      throw new Error('MONGODB_URI is not defined in environment variables');
     }
 
-    if (!connString) {
-      throw new Error('❌ MONGO_URI is missing from your backend .env file!');
-    }
-
-    const conn = await mongoose.connect(connString);
-    console.log(`🍃 MongoDB Database Connected: ${conn.connection.host}`);
+    const conn = await mongoose.connect(uri);
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error(`❌ Database connection failed: ${(error as Error).message}`);
+    console.error('❌ MongoDB connection error:', error);
     process.exit(1);
   }
 };

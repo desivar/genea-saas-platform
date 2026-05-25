@@ -1,11 +1,15 @@
+// ✅ dotenv must be the FIRST import
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import dotenv from 'dotenv';
+
 import { connectDB } from './db.js';
 import authRoutes from './routes/authRoutes.js';
 
-dotenv.config();
+
 
 const app = express();
 const PORT = process.env.PORT || 5500;
