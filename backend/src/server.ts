@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import { connectDB } from './db.js';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ connectDB();
 app.use(helmet());
 app.use(cors({ origin: 'http://localhost:5173' })); 
 app.use(express.json());
+
+app.use('/api/auth', authRoutes);
 
 // Main Status Route
 app.get('/api/status', (req: Request, res: Response): void => {
