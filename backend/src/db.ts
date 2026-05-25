@@ -22,3 +22,4 @@ export const connectDB = async (): Promise<void> => {
     process.exit(1);
   }
 };
+console.log('Password length:', process.env.MONGODB_URI?.split(':')[2]?.split('@')[0]?.length);
