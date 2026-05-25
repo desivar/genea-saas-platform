@@ -4,7 +4,6 @@
   "type": "module",
   "description": "",
   "main": "dist/server.js",
- 
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
@@ -26,6 +25,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.12.7",
     "ts-node-dev": "^2.0.0",
+    "tsx": "^4.22.3",
     "typescript": "^5.4.5"
   }
 }
