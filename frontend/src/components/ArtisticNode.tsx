@@ -1,4 +1,3 @@
-import React from 'react';
 import { Handle, Position } from 'reactflow';
 import { HERITAGE_STICKERS } from '../constants/stickers';
 
@@ -20,7 +19,6 @@ export default function ArtisticNode({ data }: ArtisticNodeProps) {
     Female: 'bg-rose-50/40 border-rose-200',
     Unknown: 'bg-amber-50/40 border-stone-300'
   }[data.gender ?? 'Unknown'];
-}
 
   return (
     <div className="relative flex flex-col items-center">
