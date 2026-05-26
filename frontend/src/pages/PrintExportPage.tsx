@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate, href } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import FourGenTree from '../components/FourGenTree';
 import FamilyCard from '../components/FamilyCard';
@@ -262,16 +262,16 @@ export default function PrintExportPage() {
                               <p className="text-stone-700 font-light leading-relaxed">
                                 {citation.footnoteText}
                               </p>
-                              <a
-                                
- 
-                                href={citation.sourceUrl ?? '#'}
-                                 target="_blank"
-                                 rel="noreferrer"
-                                 className="text-amber-700 text-xs hover:underline mt-1 block"
-                                 >
-                                {citation.sourceUrl}
+                              {citation.sourceUrl && (
+                                <a
+                                  href={citation.sourceUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="text-amber-700 text-xs hover:underline mt-1 block"
+                                >
+                                  {citation.sourceUrl}
                                 </a>
+                              )}
                             </div>
                           </li>
                         ))}
