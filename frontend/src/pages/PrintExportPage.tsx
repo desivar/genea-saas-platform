@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import FourGenTree from '../components/FourGenTree' as any;
+import FourGenTree from '../components/FourGenTree';
 import FamilyCard from '../components/FamilyCard';
 
 interface IFamilyMember {
