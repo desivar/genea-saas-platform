@@ -4,7 +4,14 @@ import { Schema, model, Document } from 'mongoose';
 export interface IUser extends Document {
   name: string;
   email: string;
+  isEmailVerified?: boolean;
+  emailVerificationToken?: string | null;
+  passwordResetToken?: string | null;
+  passwordResetExpires?: Date | null;
   passwordHash: string;
+  avatar?: string;
+  treeIds?: Schema.Types.ObjectId[];
+  lastLoginAt?: Date;
   accountTier: 'free' | 'premium';
   donationLinkClicks: number;
   createdAt: Date;
@@ -25,9 +32,25 @@ const UserSchema = new Schema<IUser>({
     lowercase: true, 
     trim: true 
   },
+  isEmailVerified: { 
+    type: Boolean, 
+    default: false 
+  },
+  emailVerificationToken: { 
+    type: String 
+  },
   passwordHash: { 
     type: String, 
     required: true 
+  },
+  passwordResetToken: {
+    type: String
+  },
+  passwordResetExpires: {
+    type: Date
+  },
+  avatar: {
+    type: String
   },
   accountTier: { 
     type: String, 

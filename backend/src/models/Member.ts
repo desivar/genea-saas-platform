@@ -1,10 +1,17 @@
 import { Schema, model, Document } from 'mongoose';
 
-// 1. Define an Interface representing a document in MongoDB for TypeScript safety
+// 1. TypeScript Interfaces
 export interface ICitation {
-  sourceTitle: string;    // e.g., "1930 US Federal Census"
-  sourceUrl?: string;     // URL if linked to an image or archive site
-  footnoteText: string;   // Layered/professional bibliographic citation
+  sourceTitle: string;
+  sourceUrl?: string;
+  footnoteText: string;
+  author?: string;
+  publisher?: string;
+  publicationYear?: number;
+  pageNumber?: string;
+  repositoryName?: string;
+  accessDate?: string;
+  shortCite?: string;
 }
 
 export interface IFamilyMember extends Document {
@@ -15,20 +22,36 @@ export interface IFamilyMember extends Document {
   birthPlace?: string;
   deathDate?: string;
   deathPlace?: string;
-  
-  // Tree Architecture Links
   fatherId?: Schema.Types.ObjectId;
   motherId?: Schema.Types.ObjectId;
-  spouseId?: Schema.Types.ObjectId;
-  
-  // Archival & Content fields
+  spouseIds?: Schema.Types.ObjectId[];
+  childrenIds?: Schema.Types.ObjectId[];
+  treeId?: Schema.Types.ObjectId;
+  generation?: number;
+  profilePhoto?: string;
+  photos?: string[];
   notes?: string;
-  extractedOcrText?: string; // Where the Cloudinary OCR text goes later
+  extractedOcrText?: string;
   citations: ICitation[];
   createdAt: Date;
+  updatedAt: Date;
 }
 
-// 2. Create the Mongoose Schema matching the interface
+// 2. Citation Schema — declared FIRST before FamilyMemberSchema uses it
+const ICitationSchema = new Schema<ICitation>({
+  sourceTitle: { type: String, required: true },
+  author: { type: String },
+  publisher: { type: String },
+  publicationYear: { type: Number },
+  pageNumber: { type: String },
+  repositoryName: { type: String },
+  accessDate: { type: String },
+  sourceUrl: { type: String },
+  footnoteText: { type: String, required: true },
+  shortCite: { type: String }
+});
+
+// 3. Family Member Schema
 const FamilyMemberSchema = new Schema<IFamilyMember>({
   firstName: { type: String, required: true, trim: true },
   lastName: { type: String, required: true, trim: true },
@@ -37,26 +60,23 @@ const FamilyMemberSchema = new Schema<IFamilyMember>({
   birthPlace: { type: String, trim: true },
   deathDate: { type: String },
   deathPlace: { type: String, trim: true },
-  
-  // Self-referencing IDs to dynamically connect relatives for your charts
   fatherId: { type: Schema.Types.ObjectId, ref: 'FamilyMember' },
   motherId: { type: Schema.Types.ObjectId, ref: 'FamilyMember' },
-  spouseId: { type: Schema.Types.ObjectId, ref: 'FamilyMember' },
-  
+  spouseIds: [{ type: Schema.Types.ObjectId, ref: 'FamilyMember' }],
+  childrenIds: [{ type: Schema.Types.ObjectId, ref: 'FamilyMember' }],
+  treeId: { type: Schema.Types.ObjectId, ref: 'FamilyTree' },
+  generation: { type: Number },
+  profilePhoto: { type: String },
+  photos: [{ type: String }],
   notes: { type: String },
   extractedOcrText: { type: String },
-  
-  // Embedded sub-document array for professional source tracking
-  citations: [{
-    sourceTitle: { type: String, required: true },
-    sourceUrl: { type: String },
-    footnoteText: { type: String, required: true }
-  }]
+  citations: [ICitationSchema]
 }, {
-  timestamps: true // Automatically manages createdAt and updatedAt fields
+  timestamps: true
 });
 
-// Index common search fields for lightning-fast alphabetical searching later
 FamilyMemberSchema.index({ lastName: 1, firstName: 1 });
+FamilyMemberSchema.index({ treeId: 1 });
+FamilyMemberSchema.index({ generation: 1 });
 
 export const FamilyMember = model<IFamilyMember>('FamilyMember', FamilyMemberSchema);

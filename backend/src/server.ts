@@ -8,6 +8,7 @@ import helmet from 'helmet';
 
 import { connectDB } from './db.js';
 import authRoutes from './routes/authRoutes.js';
+import mongoSanitize from 'express-mongo-sanitize';
 
 
 
@@ -23,6 +24,7 @@ app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
+app.use(mongoSanitize());
 
 // Main Status Route
 app.get('/api/status', (req: Request, res: Response): void => {

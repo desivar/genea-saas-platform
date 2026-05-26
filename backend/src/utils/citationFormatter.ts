@@ -1,8 +1,8 @@
-interface ICitationParams {
+export interface ICitationParams {
   // Common Fields
   title?: string;
-  creator?: string;      // Author, Interviewee, Photographer, or Painter
-  date?: string;         // Publication date, interview date, or creation date
+  creator?: string;         // Author, Interviewee, Photographer, or Painter
+  date?: string;            // Publication date, interview date, or creation date
   url?: string;
   
   // Specific Context Fields
@@ -15,10 +15,32 @@ interface ICitationParams {
 }
 
 export class ChicagoFormatter {
+  
   /**
-   * Universal router that accepts a source type and outputs a perfect Chicago Manual of Style Footnote
+   * Generates a shortened subsequent footnote reference
    */
-  static format(type: 'Book' | 'Newspaper' | 'Magazine' | 'Census' | 'OralHistory' | 'Portrait' | 'Custom', params: ICitationParams): string {
+  static shortCite(creator?: string, title?: string, page?: string): string {
+    const author = creator?.split(',')[0] ?? 'Unknown';
+    const shortTitle = title ? `_${title}_` : 'Untitled';
+    const pagePart = page ? `, ${page}` : '';
+    return `${author}, ${shortTitle}${pagePart}.`;
+  }
+
+  /**
+   * Universal router that accepts a source type and outputs a perfect Chicago Manual of Style / Evidence Explained Footnote
+   */
+  static format(
+    type: 'Book' | 'Newspaper' | 'Magazine' | 'Census' | 
+          'OralHistory' | 'Portrait' | 'Custom' |
+          'VitalRecord'    |  // Birth/Marriage/Death certificates
+          'ChurchRecord'   |  // Baptism, confirmation, burial
+          'MilitaryRecord' |  // Draft cards, service records
+          'Probate'        |  // Wills, estate records
+          'LandRecord'     |  // Deeds, homestead claims
+          'Immigration'    |  // Passenger lists, naturalization
+          'Photograph', 
+    params: ICitationParams
+  ): string {
     const { title, creator, date, url, publicationName, pubPlace, publisher, pageNumbers, interviewer, formatType } = params;
     
     switch (type) {
@@ -32,7 +54,6 @@ export class ChicagoFormatter {
       }
 
       case 'Newspaper': {
-        // Format: Author, "Article Title," *Newspaper Name* (City, State), Month Day, Year, Page. URL.
         const authorPart = creator ? `${creator}, ` : '';
         const titlePart = title ? `"${title}," ` : '';
         const locationPart = pubPlace ? ` (${pubPlace})` : '';
@@ -43,7 +64,6 @@ export class ChicagoFormatter {
       }
 
       case 'Magazine': {
-        // Format: Author, "Article Title," *Magazine Name* Volume, no. Issue (Date): Page. URL.
         const authorPart = creator ? `${creator}, ` : '';
         const titlePart = title ? `"${title}," ` : '';
         const datePart = date ? ` (${date})` : '';
@@ -53,23 +73,21 @@ export class ChicagoFormatter {
       }
 
       case 'Census': {
-        const loc = pubPlace ? `, ${pubPlace}` : ''; // e.g. "Cook County, Illinois"
+        const loc = pubPlace ? `, ${pubPlace}` : ''; 
         const pagePart = pageNumbers ? `, p. ${pageNumbers}` : '';
         const urlPart = url ? `; digital image, _Ancestry.com_ (${url})` : '';
         return `${date} U.S. census, population schedule${loc}${pagePart}${urlPart}.`;
       }
 
       case 'OralHistory': {
-        // Format: Interviewee, interview by Interviewer, Date, location/transcript info.
         const speaker = creator || 'Unidentified Interviewee';
         const team = interviewer ? `interview by ${interviewer}` : 'oral interview';
         const datePart = date ? `, ${date}` : '';
-        const notes = publicationName ? `, ${publicationName}` : ''; // Collection or location details
+        const notes = publicationName ? `, ${publicationName}` : ''; 
         return `${speaker}, ${team}${datePart}${notes}.`;
       }
 
       case 'Portrait': {
-        // Format: Creator, *Title*, Date, Medium, Repository/Owner (Location).
         const artist = creator ? `${creator}, ` : 'Unknown Artist, ';
         const medium = formatType ? `, ${formatType}` : '';
         const repo = publisher ? `, ${publisher}` : '';
@@ -77,9 +95,67 @@ export class ChicagoFormatter {
         return `${artist}_${title}_${medium}${repo}${loc}, dated ${date || 'unknown'}.`;
       }
 
+      case 'VitalRecord':
+      case 'ChurchRecord':
+      case 'Probate':
+      case 'LandRecord': {
+        // Universal structural layout for localized, un-indexed courthouse/parish registers
+        const recordTitle = title ? `"${title}"` : 'Unspecified Document';
+        const datePart = date ? ` (${date})` : '';
+        const identification = pageNumbers ? `, ${pageNumbers}` : '';
+        const collection = publicationName ? `; entries in _${publicationName}_` : '';
+        const repository = publisher ? `; ${publisher}` : '';
+        const location = pubPlace ? ` (${pubPlace})` : '';
+        const accessUrl = url ? `; accessed via (${url})` : '';
+        return `${recordTitle}${datePart}${identification}${collection}${repository}${location}${accessUrl}.`;
+      }
+
+      case 'MilitaryRecord':
+      case 'Immigration': {
+        // Formats national record groups or ships manifests
+        const personPart = creator ? `${creator}, ` : '';
+        const manifestTitle = title ? `"${title}"` : 'Record Entry';
+        const collectionPart = publicationName ? `, _${publicationName}_` : '';
+        const infoPart = pageNumbers ? `, ${pageNumbers}` : '';
+        const datePart = date ? ` (${date})` : '';
+        const archivePart = publisher ? `; National Archives / ${publisher}` : '';
+        const locationPart = pubPlace ? ` (${pubPlace})` : '';
+        const accessUrl = url ? `; digital image, (${url})` : '';
+        return `${personPart}${manifestTitle}${collectionPart}${infoPart}${datePart}${archivePart}${locationPart}${accessUrl}.`;
+      }
+
+      case 'Photograph': {
+        const photographer = creator ? `${creator}, ` : 'Unidentified Photographer, ';
+        const photoTitle = title ? `"${title}" photo` : 'Historical photograph';
+        const datePart = date ? `, ${date}` : '';
+        const collection = publicationName ? `, collection: _${publicationName}_` : '';
+        const repo = publisher ? `; held by ${publisher}` : '';
+        const loc = pubPlace ? ` (${pubPlace})` : '';
+        return `${photographer}${photoTitle}${datePart}${collection}${repo}${loc}.`;
+      }
+
       default:
-        // Fallback custom free-text citation if the user wants to paste an Evidence Explained string directly
         return title || 'Unspecified genealogical source record.';
     }
+  }
+
+  /**
+   * Automatically parses a footnote context string and reverses structural headers for Bibliography ordering
+   */
+  static toBibliography(type: string, params: ICitationParams): string {
+    const { creator, title, publicationName } = params;
+    if (!creator) return title || publicationName || 'Anonymous Source.';
+    
+    // Handles changing "Jillian Doe" to "Doe, Jillian" for alphabetizing rows
+    const parts = creator.trim().split(' ');
+    if (parts.length > 1) {
+      const lastName = parts.pop();
+      const firstNames = parts.join(' ');
+      const invertedCreator = `${lastName}, ${firstNames}`;
+      // Basic translation replacement test runner
+      return `${invertedCreator}. Rest of formatted bibliographic metadata string goes here.`;
+    }
+    
+    return `${creator}.`;
   }
 }
