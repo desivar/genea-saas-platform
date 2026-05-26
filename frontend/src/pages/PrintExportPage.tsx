@@ -263,13 +263,15 @@ export default function PrintExportPage() {
                                 {citation.footnoteText}
                               </p>
                               <a
-                                href={citation.sourceUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-amber-700 text-xs hover:underline mt-1 block"
-                              >
+                                
+ 
+                                href={citation.sourceUrl ?? '#'}
+                                 target="_blank"
+                                 rel="noreferrer"
+                                 className="text-amber-700 text-xs hover:underline mt-1 block"
+                                 >
                                 {citation.sourceUrl}
-                              </a>
+                                </a>
                             </div>
                           </li>
                         ))}
