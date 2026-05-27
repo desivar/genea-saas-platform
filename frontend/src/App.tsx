@@ -1,20 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-
-// Pages (we'll build these one by one)
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import DashboardPage from './pages/DashboardPage';
-import TreeEditorPage from './pages/TreeEditorPage';
-import PresentationPage from './pages/PresentationPage';
+import PresentationBuilderPage from './pages/PresentationBuilderPage';
 import PrintExportPage from './pages/PrintExportPage';
 import SharePage from './pages/SharePage';
 import AboutPage from './pages/AboutPage';
-
-// Auth guard
 import ProtectedRoute from './components/ProtectedRoute';
-
-// Auth context
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 function AppRoutes() {
@@ -23,21 +15,19 @@ function AppRoutes() {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/login" element={!token ? <LoginPage /> : <Navigate to="/dashboard" />} />
-      <Route path="/register" element={!token ? <RegisterPage /> : <Navigate to="/dashboard" />} />
+      <Route path="/login" element={!token ? <LoginPage /> : <Navigate to="/builder" />} />
+      <Route path="/register" element={!token ? <RegisterPage /> : <Navigate to="/builder" />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/share/:treeId" element={<SharePage />} />
 
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/editor/:treeId" element={<TreeEditorPage />} />
-        <Route path="/presentation/:treeId" element={<PresentationPage />} />
+        <Route path="/builder/:presentationId?" element={<PresentationBuilderPage />} />
         <Route path="/print/:treeId" element={<PrintExportPage />} />
       </Route>
 
-      {/* Default redirect */}
-      <Route path="/" element={<Navigate to={token ? "/dashboard" : "/login"} />} />
+      {/* Default */}
+      <Route path="/" element={<Navigate to={token ? "/builder" : "/login"} />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
