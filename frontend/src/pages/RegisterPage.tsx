@@ -92,36 +92,50 @@ export default function RegisterPage() {
         <div className="bg-white rounded-3xl border border-stone-200 shadow-sm p-8">
           <h2 className="font-serif text-xl text-stone-700 mb-6">Create your account</h2>
 
-          {/* Role Selector */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
-            <button
-              type="button"
-              onClick={() => setForm({ ...form, role: 'user' })}
-              className={`p-3 rounded-xl border text-sm font-medium transition-all ${
-                form.role === 'user'
-                  ? 'bg-amber-50 border-amber-300 text-amber-700'
-                  : 'bg-stone-50 border-stone-200 text-stone-400'
-              }`}
-            >
-              <div className="text-xl mb-1">👨‍👩‍👧‍👦</div>
-              <div>Family Member</div>
-              <div className="text-[10px] font-light mt-0.5">View & explore trees</div>
-            </button>
+    // Role Selection
+<div className="grid grid-cols-3 gap-3 mb-6">
+  <button
+    type="button"
+    onClick={() => setForm({ ...form, role: 'user' })}
+    className={`p-3 rounded-xl border text-sm font-medium transition-all ${
+      form.role === 'user'
+        ? 'bg-amber-50 border-amber-300 text-amber-700'
+        : 'bg-stone-50 border-stone-200 text-stone-400'
+    }`}
+  >
+    <div className="text-xl mb-1">👨‍👩‍👧‍👦</div>
+    <div>Family Member</div>
+    <div className="text-[10px] font-light mt-0.5">View & explore</div>
+  </button>
 
-            <button
-              type="button"
-              onClick={() => setForm({ ...form, role: 'genealogist' })}
-              className={`p-3 rounded-xl border text-sm font-medium transition-all ${
-                form.role === 'genealogist'
-                  ? 'bg-amber-50 border-amber-300 text-amber-700'
-                  : 'bg-stone-50 border-stone-200 text-stone-400'
-              }`}
-            >
-              <div className="text-xl mb-1">🔍</div>
-              <div>Genealogist</div>
-              <div className="text-[10px] font-light mt-0.5">Build, present & report</div>
-            </button>
-          </div>
+  <button
+    type="button"
+    onClick={() => setForm({ ...form, role: 'genealogist' })}
+    className={`p-3 rounded-xl border text-sm font-medium transition-all ${
+      form.role === 'genealogist'
+        ? 'bg-amber-50 border-amber-300 text-amber-700'
+        : 'bg-stone-50 border-stone-200 text-stone-400'
+    }`}
+  >
+    <div className="text-xl mb-1">🔍</div>
+    <div>Genealogist</div>
+    <div className="text-[10px] font-light mt-0.5">Build & present</div>
+  </button>
+
+  <button
+    type="button"
+    onClick={() => setForm({ ...form, role: 'admin' as any })}
+    className={`p-3 rounded-xl border text-sm font-medium transition-all ${
+      (form.role as string) === 'admin'
+        ? 'bg-rose-50 border-rose-300 text-rose-700'
+        : 'bg-stone-50 border-stone-200 text-stone-400'
+    }`}
+  >
+    <div className="text-xl mb-1">⚙️</div>
+    <div>Admin</div>
+    <div className="text-[10px] font-light mt-0.5">First user only</div>
+  </button>
+</div>
 
           {/* Genealogist feature hint */}
           {form.role === 'genealogist' && (
