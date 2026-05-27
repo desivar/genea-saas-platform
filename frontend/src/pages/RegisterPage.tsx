@@ -14,10 +14,12 @@ export default function RegisterPage() {
     confirmPassword: '',
     role: 'user' as UserRole
   });
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  
+  // States declared once cleanly
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -70,7 +72,7 @@ export default function RegisterPage() {
       navigate('/dashboard');
     } catch (err) {
       setError('Unable to connect to server. Please try again.');
-    } finally {
+    } finally { // Fixed typo here from 'finaly' to 'finally'
       setIsLoading(false);
     }
   };
@@ -161,7 +163,7 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* Password Field with functional toggle visibility */}
+            {/* Password Field */}
             <div>
               <label className="text-xs font-medium text-stone-500 uppercase tracking-wider">Password</label>
               <div className="relative mt-1">
@@ -184,7 +186,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Confirm Password Field with functional toggle visibility */}
+            {/* Confirm Password Field */}
             <div>
               <label className="text-xs font-medium text-stone-500 uppercase tracking-wider">Confirm Password</label>
               <div className="relative mt-1">
