@@ -10,7 +10,8 @@ import { connectDB } from './db.js';
 import authRoutes from './routes/authRoutes.js';
 import mongoSanitize from 'express-mongo-sanitize';
 
-
+// After your authRoutes import
+import treeRoutes from './routes/treeRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5500;
@@ -24,6 +25,7 @@ app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/trees', treeRoutes);
 app.use(mongoSanitize());
 
 // Main Status Route
