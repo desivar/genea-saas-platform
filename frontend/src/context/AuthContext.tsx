@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-// 1. Define user types
-export type UserRole = 'user' | 'genealogist';
+export type UserRole = 'admin' | 'genealogist' | 'user';
 
 export interface IUser {
   id: string;
@@ -11,7 +10,6 @@ export interface IUser {
   role: UserRole;
 }
 
-// 2. Define what the context exposes
 interface IAuthContext {
   user: IUser | null;
   token: string | null;
@@ -19,27 +17,23 @@ interface IAuthContext {
   login: (token: string, user: IUser) => void;
   logout: () => void;
   isGenealogist: boolean;
+  isAdmin: boolean;
 }
 
-// 3. Create the context
 const AuthContext = createContext<IAuthContext | null>(null);
 
-// 4. Provider component
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<IUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Restore session from localStorage on app load
   useEffect(() => {
     const savedToken = localStorage.getItem('genea_token');
     const savedUser = localStorage.getItem('genea_user');
-
     if (savedToken && savedUser) {
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
     }
-
     setIsLoading(false);
   }, []);
 
@@ -64,18 +58,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading,
       login,
       logout,
-      isGenealogist: user?.role === 'genealogist'
+      isGenealogist: user?.role === 'genealogist' || user?.role === 'admin',
+      isAdmin: user?.role === 'admin'
     }}>
       {!isLoading && children}
     </AuthContext.Provider>
   );
 }
 
-// 5. Custom hook for easy access
 export function useAuth(): IAuthContext {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used inside AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used inside AuthProvider');
   return context;
 }
