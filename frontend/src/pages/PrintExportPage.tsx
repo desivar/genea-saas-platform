@@ -4,6 +4,15 @@ import { useAuth } from '../context/AuthContext';
 import FourGenTree from '../components/FourGenTree';
 import FamilyCard from '../components/FamilyCard';
 
+interface ICitation {
+  sourceTitle: string;
+  footnoteText: string;
+  author?: string;
+  publicationYear?: number;
+  repositoryName?: string;
+  sourceUrl?: string;
+}
+
 interface IFamilyMember {
   _id: string;
   firstName: string;
@@ -16,15 +25,6 @@ interface IFamilyMember {
   generation?: number;
   notes?: string;
   citations?: ICitation[];
-}
-
-interface ICitation {
-  sourceTitle: string;
-  footnoteText: string;
-  author?: string;
-  publicationYear?: number;
-  repositoryName?: string;
-  sourceUrl?: string;
 }
 
 type PrintLayout = 'fourgen' | 'cards' | 'report' | 'citations';
@@ -43,38 +43,49 @@ export default function PrintExportPage() {
 
   // Genealogist report data from URL params
   const isReport = searchParams.get('report') === 'true';
-  const totalTime = parseInt(searchParams.get('total') ?? '0');
+  const totalTime = parseInt(searchParams.get('total') ?? '0', 10);
+  
+  // Safe parsing fallback to prevent page crashes if URL parameter is missing
+  const rawTimings = searchParams.get('timings');
   const slideTimings: Record<number, number> = JSON.parse(
-    decodeURIComponent(searchParams.get('timings') ?? '{}')
+    rawTimings ? decodeURIComponent(rawTimings) : '{}'
   );
 
   const token = localStorage.getItem('genea_token');
 
   useEffect(() => {
-    fetchData();
-    if (isReport) setLayout('report');
-  }, [treeId]);
+    const fetchData = async () => {
+      try {
+        const [treeRes, membersRes] = await Promise.all([
+          fetch(`http://localhost:5500/api/trees/${treeId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          fetch(`http://localhost:5500/api/trees/${treeId}/members`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+        ]);
 
-  const fetchData = async () => {
-    try {
-      const [treeRes, membersRes] = await Promise.all([
-        fetch(`http://localhost:5500/api/trees/${treeId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }),
-        fetch(`http://localhost:5500/api/trees/${treeId}/members`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-      ]);
-      const treeData = await treeRes.json();
-      const membersData = await membersRes.json();
-      setTreeTitle(treeData.title);
-      setMembers(membersData);
-    } catch {
-      console.error('Could not load print data.');
-    } finally {
-      setIsLoading(false);
+        if (!treeRes.ok || !membersRes.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const treeData = await treeRes.json();
+        const membersData = await membersRes.json();
+        setTreeTitle(treeData.title);
+        setMembers(membersData);
+      } catch (error) {
+        console.error('Could not load print data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+
+    if (isReport) {
+      setLayout('report');
     }
-  };
+  }, [treeId, token, isReport]);
 
   const formatTime = (seconds: number): string => {
     const h = Math.floor(seconds / 3600);
@@ -126,6 +137,14 @@ export default function PrintExportPage() {
     );
   }
 
+  // Structuring navigation tabs schema explicitly for clean TypeScript rendering
+  const navigationTabs: { key: PrintLayout; label: string }[] = [
+    { key: 'fourgen', label: '📊 4 Generations' },
+    { key: 'cards', label: '🃏 Member Cards' },
+    { key: 'citations', label: '📚 Citations' },
+    ...(isGenealogist ? [{ key: 'report' as PrintLayout, label: '📋 Research Report' }] : [])
+  ];
+
   return (
     <div className="min-h-screen bg-stone-100">
 
@@ -146,12 +165,7 @@ export default function PrintExportPage() {
 
         {/* Center: Layout Selector */}
         <div className="flex items-center gap-1 bg-stone-100 rounded-xl p-1">
-          {([
-            { key: 'fourgen', label: '📊 4 Generations' },
-            { key: 'cards', label: '🃏 Member Cards' },
-            { key: 'citations', label: '📚 Citations' },
-            ...(isGenealogist ? [{ key: 'report', label: '📋 Research Report' }] : [])
-          ] as { key: PrintLayout; label: string }[]).map(({ key, label }) => (
+          {navigationTabs.map(({ key, label }) => (
             <button
               key={key}
               onClick={() => setLayout(key)}
@@ -210,7 +224,6 @@ export default function PrintExportPage() {
                 gender: m.gender,
                 photoUrl: m.photoUrl,
               }))}
-              title={treeTitle}
             />
           </div>
         )}
@@ -323,7 +336,7 @@ export default function PrintExportPage() {
                     return (
                       <div key={slideIndex} className="flex items-center gap-4">
                         <span className="text-stone-400 text-xs font-mono w-16 flex-shrink-0">
-                          Slide {parseInt(slideIndex) + 1}
+                          Slide {parseInt(slideIndex, 10) + 1}
                         </span>
                         <div className="flex-1 bg-stone-100 rounded-full h-2">
                           <div
@@ -366,7 +379,7 @@ export default function PrintExportPage() {
                 {/* Heritage Breakdown */}
                 <div className="bg-stone-50 border border-stone-200 rounded-2xl p-4">
                   <h4 className="text-xs uppercase tracking-wider text-stone-400 mb-3">By Heritage</h4>
-                  {Array.from(new Set(members.map(m => m.heritage).filter(Boolean))).map(heritage => {
+                  {Array.from(new Set(members.map(m => m.heritage).filter((h): h is string => Boolean(h)))).map(heritage => {
                     const count = members.filter(m => m.heritage === heritage).length;
                     return (
                       <div key={heritage} className="flex justify-between text-sm py-1">
@@ -383,7 +396,7 @@ export default function PrintExportPage() {
             <div>
               <h3 className="font-serif text-lg text-stone-700 mb-4">By Generation</h3>
               <div className="flex flex-col gap-2">
-                {Array.from(new Set(members.map(m => m.generation ?? 1))).sort().map(gen => {
+                {Array.from(new Set(members.map(m => m.generation ?? 1))).sort((a, b) => a - b).map(gen => {
                   const count = members.filter(m => (m.generation ?? 1) === gen).length;
                   return (
                     <div key={gen} className="flex items-center gap-4">
