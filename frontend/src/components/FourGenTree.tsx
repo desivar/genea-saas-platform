@@ -10,7 +10,7 @@ export default function FourGenTree({ familyData }) {
   const gen4 = familyData.filter(m => m.generation === 4); // Children
 
   return (
-    <div className="w-full min-h-[500px] bg-stone-50 p-8 rounded-3xl border border-stone-200/60 overflow-x-auto">
+    <div className="w-full min-h-125 bg-stone-50 p-8 rounded-3xl border border-stone-200/60 overflow-x-auto">
       {/* 4-Column Grid Layout */}
       <div className="grid grid-cols-4 gap-x-12 min-w-[1100px] h-full items-center">
         
