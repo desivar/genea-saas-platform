@@ -113,7 +113,7 @@ export default function LandingPage() {
   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
   textAlign: 'center', padding: '120px 24px 80px',
   background: 'radial-gradient(ellipse at 50% 0%, #f0e6ff 0%, #fdf8ff 60%)',
-  position: 'relative', overflow: 'hidden',
+  position: 'relative',
   zIndex: 1 // Gives the hero a low base layer
 }}>
 
