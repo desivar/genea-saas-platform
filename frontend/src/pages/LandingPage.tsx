@@ -54,12 +54,7 @@ export default function LandingPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   
 
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
+ 
   return (
     <div style={{
       minHeight: '100vh',
