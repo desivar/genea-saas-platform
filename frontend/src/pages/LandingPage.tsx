@@ -72,52 +72,54 @@ export default function LandingPage() {
       {/* Google Fonts */}
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" />
 
+      
       {/* ── Navbar ── */}
-      <nav style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        backgroundColor: scrollY > 50 ? 'rgba(253,248,255,0.95)' : 'transparent',
-        backdropFilter: scrollY > 50 ? 'blur(12px)' : 'none',
-        borderBottom: scrollY > 50 ? '1px solid #e8d5f5' : 'none',
-        padding: '16px 48px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        transition: 'all 0.3s ease'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '28px' }}>🌳</span>
-          <span style={{ fontSize: '24px', fontWeight: '700', color: '#3d1f6e', letterSpacing: '-0.5px' }}>Genea</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '32px',  zIndex: 101, position: 'relative' }}>
-          <a href="#features" style={{ color: '#6b5b9e', fontSize: '15px', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif" }}>Features</a>
-          <a href="#how" style={{ color: '#6b5b9e', fontSize: '15px', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif" }}>How it works</a>
-          <a href="#about" style={{ color: '#6b5b9e', fontSize: '15px', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif" }}>About</a>
-          <button
-            onClick={() => navigate('/login')}
-            style={{ padding: '8px 20px', background: 'transparent', border: '1px solid #9b7fd4', color: '#6b5b9e', borderRadius: '24px', cursor: 'pointer', fontSize: '14px', fontFamily: "'DM Sans', sans-serif" }}
-          >
-            Sign in
-          </button>
-          <button
-            onClick={() => navigate('/register')}
-            style={{ padding: '8px 20px', background: 'linear-gradient(135deg, #9b7fd4, #c084fc)', border: 'none', color: '#fff', borderRadius: '24px', cursor: 'pointer', fontSize: '14px', fontWeight: '500', fontFamily: "'DM Sans', sans-serif", boxShadow: '0 4px 16px rgba(155,127,212,0.4)' }}
-          >
-            Get started free
-          </button>
-        </div>
-      </nav>
+<nav style={{
+  position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, // Increased z-index to stay on top
+  backgroundColor: scrollY > 50 ? 'rgba(253,248,255,0.95)' : 'transparent',
+  backdropFilter: scrollY > 50 ? 'blur(12px)' : 'none',
+  borderBottom: scrollY > 50 ? '1px solid #e8d5f5' : 'none',
+  padding: '16px 48px',
+  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+  transition: 'all 0.3s ease'
+}}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+    <span style={{ fontSize: '28px' }}>🌳</span>
+    <span style={{ fontSize: '24px', fontWeight: '700', color: '#3d1f6e', letterSpacing: '-0.5px' }}>Genea</span>
+  </div>
+  {/* Keeps nav content interactive */}
+  <div style={{ display: 'flex', alignItems: 'center', gap: '32px', zIndex: 1001, position: 'relative' }}>
+    <a href="#features" style={{ color: '#6b5b9e', fontSize: '15px', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif" }}>Features</a>
+    <a href="#how" style={{ color: '#6b5b9e', fontSize: '15px', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif" }}>How it works</a>
+    <a href="#about" style={{ color: '#6b5b9e', fontSize: '15px', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif" }}>About</a>
+    <button
+      onClick={() => navigate('/login')}
+      style={{ padding: '8px 20px', background: 'transparent', border: '1px solid #9b7fd4', color: '#6b5b9e', borderRadius: '24px', cursor: 'pointer', fontSize: '14px', fontFamily: "'DM Sans', sans-serif" }}
+    >
+      Sign in
+    </button>
+    <button
+      onClick={() => navigate('/register')}
+      style={{ padding: '8px 20px', background: 'linear-gradient(135deg, #9b7fd4, #c084fc)', border: 'none', color: '#fff', borderRadius: '24px', cursor: 'pointer', fontSize: '14px', fontWeight: '500', fontFamily: "'DM Sans', sans-serif", boxShadow: '0 4px 16px rgba(155,127,212,0.4)' }}
+    >
+      Get started free
+    </button>
+  </div>
+</nav>
 
-      {/* ── Hero ── */}
-      <section ref={heroRef} style={{
-        minHeight: '100vh',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        textAlign: 'center', padding: '120px 24px 80px',
-        background: 'radial-gradient(ellipse at 50% 0%, #f0e6ff 0%, #fdf8ff 60%)',
-        position: 'relative', overflow: 'hidden'
-      }}>
+{/* ── Hero ── */}
+<section ref={heroRef} style={{
+  minHeight: '100vh',
+  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+  textAlign: 'center', padding: '120px 24px 80px',
+  background: 'radial-gradient(ellipse at 50% 0%, #f0e6ff 0%, #fdf8ff 60%)',
+  position: 'relative', overflow: 'hidden',
+  zIndex: 1 // Gives the hero a low base layer
+}}>
 
-        {/* Decorative orbs */}
-        <div style={{ position: 'absolute', top: '10%', left: '5%', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, #e9d5ff40, transparent)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: '15%', right: '8%', width: '200px', height: '200px', borderRadius: '50%', background: 'radial-gradient(circle, #fce7f340, transparent)', pointerEvents: 'none' }} />
-
+  {/* Decorative orbs (Ensured pointerEvents: 'none' and low zIndex) */}
+  <div style={{ position: 'absolute', top: '10%', left: '5%', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, #e9d5ff40, transparent)', pointerEvents: 'none', zIndex: -1 }} />
+  <div style={{ position: 'absolute', bottom: '15%', right: '8%', width: '200px', height: '200px', borderRadius: '50%', background: 'radial-gradient(circle, #fce7f340, transparent)', pointerEvents: 'none', zIndex: -1 }} />
         {/* Badge */}
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: '8px',
