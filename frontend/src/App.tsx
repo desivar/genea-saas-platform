@@ -8,6 +8,7 @@ import SharePage from './pages/SharePage';
 import AboutPage from './pages/AboutPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import LandingPage from './pages/LandingPage';
 
 function AppRoutes() {
   const { token } = useAuth();
@@ -27,7 +28,7 @@ function AppRoutes() {
       </Route>
 
       {/* Default */}
-      <Route path="/" element={<Navigate to={token ? "/builder" : "/login"} />} />
+       <Route path="/" element={!token ? <LandingPage /> : <Navigate to="/builder" />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
