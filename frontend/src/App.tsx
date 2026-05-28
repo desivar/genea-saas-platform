@@ -16,7 +16,7 @@ function AppRoutes() {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/login" element={!token ? <LoginPage /> : <Navigate to="/builder" />} />
+     <Route path="/" element={!token ? <LandingPage /> : <Navigate to="/builder" />} />
       <Route path="/register" element={!token ? <RegisterPage /> : <Navigate to="/builder" />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/share/:treeId" element={<SharePage />} />
