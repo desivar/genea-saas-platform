@@ -282,7 +282,18 @@ function SlideCanvas({ slide, palette, font, isEditing, onUpdate }: {
     position: 'relative',
     overflow: 'hidden',
   };
-
+const FootnoteBar = () => {
+  if (!slide.citations || slide.citations.length === 0) return null;
+  return (
+    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '8px 48px', borderTop: `1px solid ${p.border}`, backgroundColor: `${p.bg}ee` }}>
+      {slide.citations.map((c, i) => (
+        <p key={c.id} style={{ fontSize: '9px', color: p.muted, margin: '1px 0', fontStyle: 'italic', lineHeight: '1.4', fontFamily: f }}>
+          <sup style={{ color: p.accent, fontWeight: '700' }}>{i + 1}</sup> {c.footnoteText}
+        </p>
+      ))}
+    </div>
+  );
+};
   // ── Cover ──
   if (slide.type === 'cover') {
     return (
@@ -296,6 +307,12 @@ function SlideCanvas({ slide, palette, font, isEditing, onUpdate }: {
           {editableText(slide.body || '', v => onUpdate({ ...slide, body: v }), { fontSize: '13px', color: p.muted, letterSpacing: '3px', textTransform: 'uppercase' }, 'Established 1780 — Present Day')}
         </div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '4px', backgroundColor: p.accent }} />
+{isEditing && (
+  <button onClick={() => onCite && onCite(slide)} style={{ position: 'absolute', bottom: '20px', right: '12px', padding: '4px 10px', background: 'transparent', border: `1px dashed ${p.accent}`, color: p.accent, borderRadius: '6px', cursor: 'pointer', fontSize: '10px', fontFamily: f, zIndex: 10 }}>
+    📚 {slide.citations?.length ? `${slide.citations.length} cite${slide.citations.length > 1 ? 's' : ''}` : '+ Cite'}
+  </button>
+)}
+<FootnoteBar />
       </div>
     );
   }
@@ -318,6 +335,12 @@ function SlideCanvas({ slide, palette, font, isEditing, onUpdate }: {
                     {!isEditing && <span style={{ fontSize: '40px' }}>📷</span>}
                   </div>
               }
+              {isEditing && (
+  <button onClick={() => onCite && onCite(slide)} style={{ position: 'absolute', bottom: '20px', right: '12px', padding: '4px 10px', background: 'transparent', border: `1px dashed ${p.accent}`, color: p.accent, borderRadius: '6px', cursor: 'pointer', fontSize: '10px', fontFamily: f, zIndex: 10 }}>
+    📚 {slide.citations?.length ? `${slide.citations.length} cite${slide.citations.length > 1 ? 's' : ''}` : '+ Cite'}
+  </button>
+)}
+<FootnoteBar />
             </div>
             {/* Heritage sticker */}
             {person.heritage && HERITAGE_STICKERS[person.heritage] && (
@@ -399,6 +422,12 @@ function SlideCanvas({ slide, palette, font, isEditing, onUpdate }: {
             </button>
           )}
         </div>
+        {isEditing && (
+  <button onClick={() => onCite && onCite(slide)} style={{ position: 'absolute', bottom: '20px', right: '12px', padding: '4px 10px', background: 'transparent', border: `1px dashed ${p.accent}`, color: p.accent, borderRadius: '6px', cursor: 'pointer', fontSize: '10px', fontFamily: f, zIndex: 10 }}>
+    📚 {slide.citations?.length ? `${slide.citations.length} cite${slide.citations.length > 1 ? 's' : ''}` : '+ Cite'}
+  </button>
+)}
+<FootnoteBar />
       </div>
     );
   }
@@ -423,6 +452,12 @@ function SlideCanvas({ slide, palette, font, isEditing, onUpdate }: {
             </select>
           </div>
         )}
+        {isEditing && (
+  <button onClick={() => onCite && onCite(slide)} style={{ position: 'absolute', bottom: '20px', right: '12px', padding: '4px 10px', background: 'transparent', border: `1px dashed ${p.accent}`, color: p.accent, borderRadius: '6px', cursor: 'pointer', fontSize: '10px', fontFamily: f, zIndex: 10 }}>
+    📚 {slide.citations?.length ? `${slide.citations.length} cite${slide.citations.length > 1 ? 's' : ''}` : '+ Cite'}
+  </button>
+)}
+<FootnoteBar />
       </div>
     );
   }
@@ -448,6 +483,12 @@ function SlideCanvas({ slide, palette, font, isEditing, onUpdate }: {
             <button onClick={() => onUpdate({ ...slide, facts: [...facts, { label: 'New Fact', value: '0' }] })} style={{ backgroundColor: 'transparent', border: `1px dashed ${p.accent}`, borderRadius: '12px', padding: '20px', color: p.accent, cursor: 'pointer', fontSize: '24px', fontFamily: f }}>+</button>
           )}
         </div>
+        {isEditing && (
+  <button onClick={() => onCite && onCite(slide)} style={{ position: 'absolute', bottom: '20px', right: '12px', padding: '4px 10px', background: 'transparent', border: `1px dashed ${p.accent}`, color: p.accent, borderRadius: '6px', cursor: 'pointer', fontSize: '10px', fontFamily: f, zIndex: 10 }}>
+    📚 {slide.citations?.length ? `${slide.citations.length} cite${slide.citations.length > 1 ? 's' : ''}` : '+ Cite'}
+  </button>
+)}
+<FootnoteBar />
       </div>
     );
   }
@@ -470,6 +511,12 @@ function SlideCanvas({ slide, palette, font, isEditing, onUpdate }: {
           {editableText(slide.title, v => onUpdate({ ...slide, title: v }), { fontSize: '32px', fontWeight: '700', color: p.text, display: 'block' }, 'Our Story')}
           {editableText(slide.body || '', v => onUpdate({ ...slide, body: v }), { fontSize: '15px', color: p.muted, lineHeight: '1.8' }, 'Write your family story here...', true)}
         </div>
+        {isEditing && (
+  <button onClick={() => onCite && onCite(slide)} style={{ position: 'absolute', bottom: '20px', right: '12px', padding: '4px 10px', background: 'transparent', border: `1px dashed ${p.accent}`, color: p.accent, borderRadius: '6px', cursor: 'pointer', fontSize: '10px', fontFamily: f, zIndex: 10 }}>
+    📚 {slide.citations?.length ? `${slide.citations.length} cite${slide.citations.length > 1 ? 's' : ''}` : '+ Cite'}
+  </button>
+)}
+<FootnoteBar />
       </div>
     );
   }
@@ -494,6 +541,7 @@ function SlideCanvas({ slide, palette, font, isEditing, onUpdate }: {
                 {!isEditing && <span style={{ fontSize: '10px', color: p.muted, textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '2px' }}>{c.type}</span>}
                 {editableText(c.text, v => { const cs = [...citations]; cs[i] = { ...cs[i], text: v }; onUpdate({ ...slide, citations: cs }); }, { fontSize: '13px', color: p.text, lineHeight: '1.6', fontStyle: 'italic' }, 'Enter Chicago-style citation here...', true)}
               </div>
+              
               {isEditing && <button onClick={() => onUpdate({ ...slide, citations: citations.filter((_, j) => j !== i) })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: p.muted, fontSize: '14px' }}>✕</button>}
             </div>
           ))}
@@ -529,6 +577,12 @@ function SlideCanvas({ slide, palette, font, isEditing, onUpdate }: {
       <p style={{ color: p.muted, fontSize: '14px', textAlign: 'center', maxWidth: '400px' }}>
         The interactive family tree will render here with your member data from the database.
       </p>
+      {isEditing && (
+  <button onClick={() => onCite && onCite(slide)} style={{ position: 'absolute', bottom: '20px', right: '12px', padding: '4px 10px', background: 'transparent', border: `1px dashed ${p.accent}`, color: p.accent, borderRadius: '6px', cursor: 'pointer', fontSize: '10px', fontFamily: f, zIndex: 10 }}>
+    📚 {slide.citations?.length ? `${slide.citations.length} cite${slide.citations.length > 1 ? 's' : ''}` : '+ Cite'}
+  </button>
+)}
+<FootnoteBar />
     </div>
   );
 }
