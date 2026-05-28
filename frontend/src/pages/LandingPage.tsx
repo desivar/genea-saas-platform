@@ -52,7 +52,7 @@ const TESTIMONIAL = {
 export default function LandingPage() {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLDivElement>(null);
-  const [scrollY, setScrollY] = useState(0);
+  
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
