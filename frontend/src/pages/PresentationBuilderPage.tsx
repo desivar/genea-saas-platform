@@ -673,7 +673,12 @@ export default function PresentationBuilderPage() {
           <button onClick={logout} style={{ color: '#666', background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px' }}>Sign out</button>
         </div>
       </div>
-
+<button 
+  onClick={() => { logout(); navigate('/'); }} 
+  style={{ color: '#666', background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px' }}
+>
+  Sign out
+</button>
       {/* Main Layout */}
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
 
