@@ -541,7 +541,7 @@ const FootnoteBar = () => {
                 {!isEditing && <span style={{ fontSize: '10px', color: p.muted, textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '2px' }}>{c.type}</span>}
                 {editableText(c.text, v => { const cs = [...citations]; cs[i] = { ...cs[i], text: v }; onUpdate({ ...slide, citations: cs }); }, { fontSize: '13px', color: p.text, lineHeight: '1.6', fontStyle: 'italic' }, 'Enter Chicago-style citation here...', true)}
               </div>
-              
+
               {isEditing && <button onClick={() => onUpdate({ ...slide, citations: citations.filter((_, j) => j !== i) })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: p.muted, fontSize: '14px' }}>✕</button>}
             </div>
           ))}
@@ -606,6 +606,8 @@ export default function PresentationBuilderPage() {
   const [rightPanel, setRightPanel] = useState<'slides' | 'design' | 'add' | 'members'>('slides');
   const [presentationTitle, setPresentationTitle] = useState('My Family Presentation');
   const [isSaving, setIsSaving] = useState(false);
+  const [citingSlide, setCitingSlide] = useState<SlideData | null>(null);
+const [dbTreeId, setDbTreeId] = useState<string | null>(null);
   const printRef = useRef<HTMLDivElement>(null);
 
   const activeSlide = slides.find(s => s.id === activeSlideId) || slides[0];
@@ -621,6 +623,15 @@ export default function PresentationBuilderPage() {
     return () => { document.head.removeChild(link); };
   }, [font]);
 
+// ✅ Add this new useEffect right after
+useEffect(() => {
+  const savedTreeId = localStorage.getItem('genea_tree_id');
+  if (savedTreeId) {
+    setDbTreeId(savedTreeId);
+  } else {
+    initializeTree();
+  }
+}, []);
   const updateSlide = (updated: SlideData) => {
     setSlides(prev => prev.map(s => s.id === updated.id ? updated : s));
   };
@@ -649,7 +660,25 @@ export default function PresentationBuilderPage() {
     [newSlides[idx], newSlides[swap]] = [newSlides[swap], newSlides[idx]];
     setSlides(newSlides);
   };
-
+// Initialize or load tree from database
+const initializeTree = async () => {
+  const token = localStorage.getItem('genea_token');
+  try {
+    const res = await fetch('http://localhost:5500/api/trees', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ title: presentationTitle })
+    });
+    const data = await res.json();
+    setDbTreeId(data._id);
+    localStorage.setItem('genea_tree_id', data._id);
+  } catch {
+    console.error('Could not create tree');
+  }
+};
   const handleSave = async () => {
     setIsSaving(true);
     try {
