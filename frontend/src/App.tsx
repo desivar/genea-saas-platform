@@ -6,9 +6,9 @@ import PresentationBuilderPage from './pages/PresentationBuilderPage';
 import PrintExportPage from './pages/PrintExportPage';
 import SharePage from './pages/SharePage';
 import AboutPage from './pages/AboutPage';
+import LandingPage from './pages/LandingPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import LandingPage from './pages/LandingPage';
 
 function AppRoutes() {
   const { token } = useAuth();
@@ -16,7 +16,8 @@ function AppRoutes() {
   return (
     <Routes>
       {/* Public Routes */}
-     <Route path="/" element={!token ? <LandingPage /> : <Navigate to="/builder" />} />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={!token ? <LoginPage /> : <Navigate to="/builder" />} />
       <Route path="/register" element={!token ? <RegisterPage /> : <Navigate to="/builder" />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/share/:treeId" element={<SharePage />} />
@@ -27,8 +28,7 @@ function AppRoutes() {
         <Route path="/print/:treeId" element={<PrintExportPage />} />
       </Route>
 
-      {/* Default */}
-       <Route path="/" element={!token ? <LandingPage /> : <Navigate to="/builder" />} />
+      {/* Fallback */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
