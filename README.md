@@ -111,4 +111,10 @@ Citations appear as footnotes on each slide and auto-populate the bibliography s
 MIT License — free to use and modify.
 
 ## 👩‍💻 Author
+Desire Vargas|Honduras
+FamilySearch volunteer since 2009
+Records Management certificates RMU
+Bachelor degree in software development-BYU-I
+Asociated degree in software Development-BYU-I
+Asociated degree in family history research-BYU-I-October 2026
 Built with care for families everywhere 🌳
