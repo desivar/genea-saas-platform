@@ -60,6 +60,21 @@ interface SlideData {
   heritageKey?: string;
   backgroundColor?: string;
 }
+// Then your existing SlideData interface with citations added:
+interface SlideData {
+  id: string;
+  type: SlideType;
+  title: string;
+  subtitle?: string;
+  body?: string;
+  person?: PersonData;
+  timelineEvents?: TimelineEvent[];
+  facts?: { label: string; value: string }[];
+  citations?: ISlideCitation[];  // ← this line
+  imageUrl?: string;
+  heritageKey?: string;
+  backgroundColor?: string;
+}
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
