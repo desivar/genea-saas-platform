@@ -86,7 +86,7 @@ export default function LandingPage() {
           <span style={{ fontSize: '28px' }}>🌳</span>
           <span style={{ fontSize: '24px', fontWeight: '700', color: '#3d1f6e', letterSpacing: '-0.5px' }}>Genea</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '32px',  zIndex: 101, position: 'relative' }}>
           <a href="#features" style={{ color: '#6b5b9e', fontSize: '15px', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif" }}>Features</a>
           <a href="#how" style={{ color: '#6b5b9e', fontSize: '15px', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif" }}>How it works</a>
           <a href="#about" style={{ color: '#6b5b9e', fontSize: '15px', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif" }}>About</a>
