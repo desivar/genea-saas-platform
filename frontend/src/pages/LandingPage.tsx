@@ -66,7 +66,7 @@ export default function LandingPage() {
       fontFamily: "'Cormorant Garamond', Georgia, serif",
       backgroundColor: '#fdf8ff',
       color: '#1e1a2e',
-      overflowX: 'hidden'
+    
     }}>
 
       {/* Google Fonts */}
