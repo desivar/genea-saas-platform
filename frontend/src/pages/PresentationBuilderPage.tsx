@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { HERITAGE_STICKERS } from '../constants/stickers';
+import { useParams } from 'react-router-dom';
+import MembersPanel from '../components/MembersPanel';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -520,6 +522,7 @@ function SlideCanvas({ slide, palette, font, isEditing, onUpdate }: {
 
 export default function PresentationBuilderPage() {
   const navigate = useNavigate();
+  const { presentationId } = useParams<{ presentationId?: string }>();
   const { user, logout } = useAuth();
 
   const [slides, setSlides] = useState<SlideData[]>([
@@ -531,7 +534,7 @@ export default function PresentationBuilderPage() {
   const [isEditing, setIsEditing] = useState(true);
   const [isPresentMode, setIsPresentMode] = useState(false);
   const [presentIndex, setPresentIndex] = useState(0);
-  const [rightPanel, setRightPanel] = useState<'slides' | 'design' | 'add'>('slides');
+  const [rightPanel, setRightPanel] = useState<'slides' | 'design' | 'add' | 'members'>('slides');
   const [presentationTitle, setPresentationTitle] = useState('My Family Presentation');
   const [isSaving, setIsSaving] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
@@ -747,24 +750,37 @@ export default function PresentationBuilderPage() {
 
         {/* Right Panel */}
         <div style={{ width: '260px', backgroundColor: '#fff', borderLeft: '1px solid #e8e8e8', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
-
-          {/* Panel Tabs */}
-          <div style={{ display: 'flex', borderBottom: '1px solid #e8e8e8' }}>
-            {(['slides', 'design', 'add'] as const).map(tab => (
-              <button
-                key={tab}
-                onClick={() => setRightPanel(tab)}
-                style={{
-                  flex: 1, padding: '12px 4px', background: 'none',
-                  border: 'none', borderBottom: `2px solid ${rightPanel === tab ? p.accent : 'transparent'}`,
-                  color: rightPanel === tab ? p.accent : '#999', cursor: 'pointer', fontSize: '11px',
-                  textTransform: 'uppercase', letterSpacing: '0.5px', fontFamily: f.family
-                }}
-              >
-                {tab === 'slides' ? '📋 Slides' : tab === 'design' ? '🎨 Design' : '➕ Add'}
-              </button>
-            ))}
-          </div>
+        
+    
+         {/* Panel Tabs */}
+<div style={{ display: 'flex', borderBottom: '1px solid #e8e8e8', overflowX: 'auto' }}>
+  {(['slides', 'design', 'add', 'members'] as const).map(tab => (
+    <button
+      key={tab}
+      onClick={() => setRightPanel(tab)}
+      style={{
+        flex: 1, padding: '10px 4px', background: 'none',
+        border: 'none', borderBottom: `2px solid ${rightPanel === tab ? p.accent : 'transparent'}`,
+        color: rightPanel === tab ? p.accent : '#999', cursor: 'pointer', fontSize: '10px',
+        textTransform: 'uppercase', letterSpacing: '0.5px', fontFamily: f.family,
+        whiteSpace: 'nowrap'
+      }}
+    >
+      {tab === 'slides' ? '📋' : tab === 'design' ? '🎨' : tab === 'add' ? '➕' : '👥'}
+      {' '}{tab}
+    </button>
+  ))}
+  {/* Members Panel */}
+{rightPanel === 'members' && (
+  <MembersPanel
+    treeId={treeId}
+    token={localStorage.getItem('genea_token') || ''}
+    palette={p}
+    font={f.family}
+  />
+)}
+</div>
+          
 
           <div style={{ flex: 1, overflowY: 'auto', padding: '16px' }}>
 

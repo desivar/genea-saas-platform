@@ -395,6 +395,7 @@ export default function LandingPage() {
         </div>
         <p style={{ color: '#6b5b9e', fontSize: '13px', fontFamily: "'DM Sans', sans-serif" }}>
           Built with care for families everywhere
+          @ 2026 Genea Software Inc.
         </p>
         <div style={{ display: 'flex', gap: '24px' }}>
           <button onClick={() => navigate('/login')} style={{ color: '#6b5b9e', background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', fontFamily: "'DM Sans', sans-serif" }}>Sign in</button>
