@@ -75,7 +75,7 @@ export default function LandingPage() {
       
       {/* ── Navbar ── */}
 <nav style={{
-  position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, // Increased z-index to stay on top
+  position: 'sticky', top: 0, left: 0, right: 0, zIndex: 1000, // Increased z-index to stay on top
   backgroundColor: scrollY > 50 ? 'rgba(253,248,255,0.95)' : 'transparent',
   backdropFilter: scrollY > 50 ? 'blur(12px)' : 'none',
   borderBottom: scrollY > 50 ? '1px solid #e8d5f5' : 'none',
