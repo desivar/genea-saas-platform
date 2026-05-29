@@ -871,10 +871,11 @@ const initializeTree = async () => {
   {/* Members Panel */}
 {rightPanel === 'members' && (
   <MembersPanel
-    treeId={treeId}
+    treeId={dbTreeId || undefined}
     token={localStorage.getItem('genea_token') || ''}
     palette={p}
     font={f.family}
+    onInitialize={initializeTree}
   />
 )}
 </div>
