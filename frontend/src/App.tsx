@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import PresentationBuilderPage from './pages/PresentationBuilderPage';
+import BuilderPage from './pages/BuilderPage';
 import PrintExportPage from './pages/PrintExportPage';
 import SharePage from './pages/SharePage';
 import AboutPage from './pages/AboutPage';
@@ -24,7 +24,7 @@ function AppRoutes() {
 
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/builder/:presentationId?" element={<PresentationBuilderPage />} />
+        <Route path="/builder/:presentationId?" element={<BuilderPage />} />
         <Route path="/print/:treeId" element={<PrintExportPage />} />
       </Route>
 
