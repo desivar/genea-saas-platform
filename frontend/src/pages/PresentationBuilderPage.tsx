@@ -763,32 +763,31 @@ const initializeTree = async () => {
           <button
             onClick={handleSave}
             disabled={isSaving}
-            style={{ padding: '6px 14px', background: '#c9a84c', border: 'none', color: '#1a1a2e', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}
+            style={{ padding: '6px 14px', background: isSaving ? '#2a2a36' : 'transparent', border: `1px solid ${isSaving ? '#444' : '#444'}`, color: isSaving ? '#999' : '#ccc', borderRadius: '6px', cursor: isSaving ? 'not-allowed' : 'pointer', fontSize: '12px' }}
           >
             {isSaving ? 'Saving...' : '💾 Save'}
+          {isSaving ? 'Saving...' : '💾 Save'}
           </button>
           <div style={{ width: '1px', height: '24px', background: '#333' }} />
-          <span style={{ color: '#666', fontSize: '12px' }}>
-            {user?.name}
+          <span style={{ color: '#666', fontSize: '12px' }}>{user?.name}</span>
+          <span style={{ fontSize: '11px', padding: '2px 8px', backgroundColor: '#c9a84c22', border: '1px solid #c9a84c', borderRadius: '12px', color: '#c9a84c' }}>
+            {user?.role}
           </span>
-          <button onClick={logout} style={{ color: '#666', background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px' }}>Sign out</button>
+          <button
+            onClick={() => { logout(); navigate('/'); }}
+            style={{ padding: '6px 14px', background: 'transparent', border: '1px solid #444', color: '#888', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}
+          >
+            Sign out
+          </button>
         </div>
       </div>
-<button 
-  onClick={() => { logout(); navigate('/'); }} 
-  style={{ color: '#666', background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px' }}
->
-  Sign out
-</button>
+  
       {/* Main Layout */}
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
 
         {/* Left Panel — Slide List */}
-        <div style={{ width: '200px', backgroundColor: '#13131f', padding: '12px 8px', overflowY: 'auto', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          {slides.map((slide, i) => (
-            <div
-              key={slide.id}
-              onClick={() => setActiveSlideId(slide.id)}
+        <div style={{ width: '200px', ba
+              onclick={() => setActiveSlideId(slide.id)}
               style={{
                 padding: '8px 10px',
                 borderRadius: '6px',
