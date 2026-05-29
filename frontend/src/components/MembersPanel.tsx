@@ -122,16 +122,22 @@ export default function MembersPanel({ treeId, token, palette: p, font }: Member
     textTransform: 'uppercase', letterSpacing: '1px',
     display: 'block', marginBottom: '3px'
   };
-
-  if (!treeId) {
-    return (
-      <div style={{ padding: '16px', textAlign: 'center' }}>
-        <p style={{ color: '#999', fontSize: '12px' }}>
-          Save your presentation first to add members.
-        </p>
-      </div>
-    );
-  }
+if (!treeId) {
+  return (
+    <div style={{ padding: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <div style={{ fontSize: '32px' }}>🌳</div>
+      <p style={{ color: '#999', fontSize: '12px' }}>
+        Click below to initialize your family tree.
+      </p>
+      <button
+        onClick={onInitialize}
+        style={{ padding: '8px 16px', background: '#8b5e3c', border: 'none', color: '#fff', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}
+      >
+        Initialize Tree
+      </button>
+    </div>
+  );
+}
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
