@@ -23,7 +23,7 @@ export default function ArtisticNode({ data }: ArtisticNodeProps) {
   return (
     <div className="relative flex flex-col items-center">
       {/* Invisible connection ports hidden behind our custom shapes */}
-      <Handle type="target" position={Position.Left} className="opacity-0" />
+      <Handle type="target" position={Position.Top} className="opacity-0" />
 
       {/* Elegant Circular Frame */}
       <div className="w-24 h-24 rounded-full bg-amber-50/40 p-1.5 border-2 border-stone-300 shadow-sm hover:border-amber-700/60 transition-all duration-500 flex items-center justify-center group relative">
@@ -49,7 +49,8 @@ export default function ArtisticNode({ data }: ArtisticNodeProps) {
         <p className="text-stone-400 text-[10px] mt-0.5 tracking-wider font-light">{data.lifespan}</p>
       </div>
 
-      <Handle type="source" position={Position.Right} className="opacity-0" />
+      / ...
+<Handle type="source" position={Position.Bottom} className="opacity-0" />
     </div>
   );
 }
