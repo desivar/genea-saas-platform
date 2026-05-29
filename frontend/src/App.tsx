@@ -7,6 +7,7 @@ import PrintExportPage from './pages/PrintExportPage';
 import SharePage from './pages/SharePage';
 import AboutPage from './pages/AboutPage';
 import LandingPage from './pages/LandingPage';
+import PeoplePage from './pages/PeoplePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -25,6 +26,7 @@ function AppRoutes() {
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
         <Route path="/builder/:presentationId?" element={<BuilderPage />} />
+        <Route path="/people" element={<PeoplePage />} />
         <Route path="/print/:treeId" element={<PrintExportPage />} />
       </Route>
 
