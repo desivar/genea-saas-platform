@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ChicagoFormatter, ICitationParams } from '../utils/citationFormatter';
+import { ChicagoFormatter } from '../utils/citationFormatter';
+import type { ICitationParams } from '../utils/citationFormatter';
 
 type SourceType = 'Book' | 'Newspaper' | 'Magazine' | 'Census' | 'OralHistory' | 'Portrait' | 'Custom';
 
