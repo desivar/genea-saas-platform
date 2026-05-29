@@ -33,6 +33,7 @@ interface MembersPanelProps {
   token: string;
   palette: any;
   font: string;
+  onInitialize: () => void;  // ← add this
 }
 
 export default function MembersPanel({ treeId, token, palette: p, font }: MembersPanelProps) {
