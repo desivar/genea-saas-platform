@@ -36,7 +36,12 @@ export function FullPedigreeTree({ members, palette, font }: {
   palette: any;
   font: string;
 }) {
-  const genGroups: Record<number, IFamilyMember[]> = {};
+  const HORIZONTAL_GAP = 200;
+  const VERTICAL_GAP = 200;
+   const { nodes, edges } = useMemo(() => {
+    if (members.length === 0) return { nodes: [], edges: [] };
+
+    const genGroups: Record<number, IFamilyMember[]> = {};
     members.forEach(m => {
       const g = m.generation || 1;
       if (!genGroups[g]) genGroups[g] = [];
@@ -45,18 +50,16 @@ export function FullPedigreeTree({ members, palette, font }: {
 
     const nodes: Node[] = [];
     const edges: Edge[] = [];
-
-    // Find max members in any generation for centering
-    const maxCount = Math.max(...Object.values(genGroups).map(g => g.length));
+  const maxCount = Math.max(...Object.values(genGroups).map(g => g.length));
 
     Object.entries(genGroups).forEach(([gen, genMembers]) => {
       const g = parseInt(gen);
       const count = genMembers.length;
       const totalWidth = maxCount * HORIZONTAL_GAP;
       const genWidth = count * HORIZONTAL_GAP;
-      const startX = (totalWidth - genWidth) / 2;
 
-      genMembers.forEach((member, i) => {
+       const startX = (totalWidth - genWidth) / 2;
+       genMembers.forEach((member, i) => {
         nodes.push({
           id: member._id,
           type: 'artisticNode',
@@ -70,12 +73,14 @@ export function FullPedigreeTree({ members, palette, font }: {
             photoUrl: member.photoUrl,
             heritage: member.heritage,
             gender: member.gender,
+
+    
           }
         });
       });
     });
 
-    members.forEach(member => {
+      members.forEach(member => {
       if (member.fatherId && nodes.find(n => n.id === member.fatherId)) {
         edges.push({
           id: `f-${member.fatherId}-${member._id}`,
@@ -84,7 +89,8 @@ export function FullPedigreeTree({ members, palette, font }: {
           type: 'fluidEdge',
           data: { relationshipType: 'parent' }
         });
-      }
+
+       }
       if (member.motherId && nodes.find(n => n.id === member.motherId)) {
         edges.push({
           id: `m-${member.motherId}-${member._id}`,
@@ -94,7 +100,7 @@ export function FullPedigreeTree({ members, palette, font }: {
           data: { relationshipType: 'parent' }
         });
       }
-      member.spouseIds?.forEach(spouseId => {
+    member.spouseIds?.forEach(spouseId => {
         if (!nodes.find(n => n.id === spouseId)) return;
         const edgeId = [member._id, spouseId].sort().join('-spouse-');
         if (!edges.find(e => e.id === edgeId)) {
@@ -108,8 +114,7 @@ export function FullPedigreeTree({ members, palette, font }: {
         }
       });
     });
-
-    return { nodes, edges };
+         return { nodes, edges };
   }, [members]);
 
   if (members.length === 0) {
@@ -120,8 +125,7 @@ export function FullPedigreeTree({ members, palette, font }: {
       </div>
     );
   }
-
-  return (
+       return (
     <div style={{ width: '100%', height: '100%', backgroundColor: palette.bg }}>
       <ReactFlow
         nodes={nodes}
@@ -136,12 +140,13 @@ export function FullPedigreeTree({ members, palette, font }: {
         zoomOnScroll={false}
         panOnDrag={true}
       >
-        <Background color={palette.border} gap={24} size={1} />
+             <Background color={palette.border} gap={24} size={1} />
       </ReactFlow>
     </div>
   );
 }
 
+  
 // ─── Four Generation Tree ─────────────────────────────────────────────────────
 
 export function FourGenTree({ members, palette, font }: {
