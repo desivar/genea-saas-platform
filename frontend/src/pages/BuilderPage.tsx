@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { HERITAGE_STICKERS } from '../constants/stickers';
 import { ChicagoFormatter } from '../utils/citationFormatter';
+// Add import at top:
+import { FullPedigreeTree, FourGenTree } from '../components/slides/TreeSlides';
 import CitationModal from '../components/CitationModal';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -445,11 +447,41 @@ function SlideCanvas({ slide, members, p, f, isEditing, onUpdate, onCite }: {
     </button>
   );
 
-  // Tree slides
-  if (slide.type === 'pedigree')    return <PedigreeSlide    slide={slide} members={members} p={p} f={ff} isEditing={isEditing} onUpdate={onUpdate} />;
-  if (slide.type === 'founding')    return <FoundingCoupleSlide slide={slide} members={members} p={p} f={ff} isEditing={isEditing} onUpdate={onUpdate} />;
-  if (slide.type === 'familyunit')  return <FamilyUnitSlide  slide={slide} members={members} p={p} f={ff} isEditing={isEditing} onUpdate={onUpdate} />;
-  if (slide.type === 'fourgen')     return <FourGenSlide     slide={slide} members={members} p={p} f={ff} isEditing={isEditing} onUpdate={onUpdate} />;
+  
+  // Replace the tree slides section:
+if (slide.type === 'pedigree') {
+  return (
+    <div style={{ ...base, flexDirection: 'column' }}>
+      <div style={{ padding: '16px 24px 10px', borderBottom: `2px solid ${p.accent}`, flexShrink: 0, backgroundColor: p.bg }}>
+        <EditField value={slide.title} onChange={v => onUpdate({ ...slide, title: v })} style={{ fontSize: '22px', fontWeight: '700', color: p.text }} placeholder="Full Family Pedigree" isEditing={isEditing} f={ff} />
+        <EditField value={slide.subtitle || ''} onChange={v => onUpdate({ ...slide, subtitle: v })} style={{ fontSize: '12px', color: p.muted, fontStyle: 'italic', marginTop: '2px', display: 'block' }} placeholder="From earliest ancestor to present day" isEditing={isEditing} f={ff} />
+      </div>
+      <div style={{ flex: 1, position: 'relative' }}>
+        <FullPedigreeTree members={members} palette={p} font={ff} />
+      </div>
+      {isEditing && <CiteButton />}
+      <Footnotes citations={slide.citations} p={p} f={ff} />
+    </div>
+  );
+}
+
+if (slide.type === 'fourgen') {
+  return (
+    <div style={{ ...base, flexDirection: 'column' }}>
+      <div style={{ padding: '16px 24px 10px', borderBottom: `2px solid ${p.accent}`, flexShrink: 0, backgroundColor: p.bg }}>
+        <EditField value={slide.title} onChange={v => onUpdate({ ...slide, title: v })} style={{ fontSize: '22px', fontWeight: '700', color: p.text }} placeholder="Four Generations" isEditing={isEditing} f={ff} />
+      </div>
+      <div style={{ flex: 1, position: 'relative' }}>
+        <FourGenTreeFlow members={members} palette={p} font={ff} />
+      </div>
+      {isEditing && <CiteButton />}
+      <Footnotes citations={slide.citations} p={p} f={ff} />
+    </div>
+  );
+}
+
+if (slide.type === 'founding')   return <FoundingCoupleSlide slide={slide} members={members} p={p} f={ff} isEditing={isEditing} onUpdate={onUpdate} />;
+if (slide.type === 'familyunit') return <FamilyUnitSlide     slide={slide} members={members} p={p} f={ff} isEditing={isEditing} onUpdate={onUpdate} />;
 
   // ── Cover ──
   if (slide.type === 'cover') {
