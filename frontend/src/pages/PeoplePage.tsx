@@ -13,13 +13,16 @@ interface IFamilyMember {
   deathPlace: string;
   gender: 'Male' | 'Female' | 'Unknown';
   heritage: string;
+  branch?: string;  // e.g. "Olivas-Granados", "Paternal", "Maternal"
   generation: number;
   notes: string;
   photoUrl: string;
   fatherId?: string;
   motherId?: string;
   spouseIds?: string[];
+
 }
+
 
 const empty: IFamilyMember = {
   firstName: '', lastName: '',
@@ -27,7 +30,7 @@ const empty: IFamilyMember = {
   deathDate: '', deathPlace: '',
   gender: 'Unknown', heritage: '',
   generation: 1, notes: '', photoUrl: '',
-  fatherId: '', motherId: '', spouseIds: []
+  fatherId: '', motherId: '', spouseIds: [], branch: ''
 };
 
 export default function PeoplePage() {
@@ -203,7 +206,12 @@ export default function PeoplePage() {
               {/* Birth */}
               <div>
                 <label style={labelStyle}>Birth Date</label>
-                <input style={inputStyle} value={form.birthDate} onChange={e => setForm({ ...form, birthDate: e.target.value })} placeholder="e.g. 1842 or Jan 12, 1842" />
+                <input 
+                style={inputStyle} 
+                value={form.birthDate} 
+                 onChange={e => setForm({ ...form, birthDate: e.target.value })} 
+                 placeholder="e.g. 1808, ca. 1805, Jan 12 1842" 
+                 />
               </div>
               <div>
                 <label style={labelStyle}>Birth Place</label>
@@ -218,11 +226,29 @@ export default function PeoplePage() {
                   ))}
                 </select>
               </div>
+               {/* ✅ Add Branch right here */}
+              <div>
+                <label style={labelStyle}>Family Branch / Line</label>
+                <input
+                  style={inputStyle}
+                  value={form.branch || ''}
+                  onChange={e => setForm({ ...form, branch: e.target.value })}
+                  placeholder="e.g. Olivas-Granados, Paternal, Maternal"
+                />
+                <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '3px' }}>
+                  Identifies which family line this person belongs to
+                </div>
+              </div>
 
               {/* Death */}
               <div>
-                <label style={labelStyle}>Death Date</label>
-                <input style={inputStyle} value={form.deathDate} onChange={e => setForm({ ...form, deathDate: e.target.value })} placeholder="Leave blank if living" />
+               <label style={labelStyle}>Death Date</label>
+              <input 
+               style={inputStyle} 
+                value={form.deathDate} 
+                 onChange={e => setForm({ ...form, deathDate: e.target.value })} 
+                placeholder="e.g. 1895, ca. 1890, unknown" 
+                 />
               </div>
               <div>
                 <label style={labelStyle}>Death Place</label>
@@ -394,6 +420,16 @@ export default function PeoplePage() {
                     <span style={{ fontSize: '10px', padding: '1px 8px', backgroundColor: '#f1f5f9', borderRadius: '10px', color: '#64748b', border: '1px solid #e2e8f0' }}>
                       Gen {member.generation}
                     </span>
+                    {/* ✅ Add branch badge here */}
+                    {member.branch && (
+                    <span style={{
+                   fontSize: '10px', padding: '1px 8px',
+                   backgroundColor: '#f0e6ff', borderRadius: '10px',
+                   color: '#7c3aed', border: '1px solid #d8b4fe'
+                    }}>
+                   🌿 {member.branch}
+                  </span>
+                   )}
                   </div>
                   <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                     <span style={{ fontSize: '12px', color: '#64748b', fontFamily: "'DM Sans', sans-serif" }}>

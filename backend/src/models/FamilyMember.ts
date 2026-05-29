@@ -12,6 +12,7 @@ export interface ICitation {
   repositoryName?: string;
   accessDate?: string;
   shortCite?: string;
+  branch?: string;
 }
 
 export interface IFamilyMember extends Document {
@@ -30,8 +31,9 @@ export interface IFamilyMember extends Document {
   generation?: number;
   profilePhoto?: string;
   photos?: string[];
-  notes?: string;
-  extractedOcrText?: string;
+  notes: { type: String },
+  extractedOcrText: { type: String },
+  branch: { type: String, trim: true },
   citations: ICitation[];
   createdAt: Date;
   updatedAt: Date;

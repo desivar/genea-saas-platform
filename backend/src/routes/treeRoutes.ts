@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import { protect, AuthRequest } from '../middleware/authMiddleware.js';
 import { Tree } from '../models/Tree.js';
 import { FamilyMember } from '../models/FamilyMember.js';
+import { error } from 'console';
 
 const router = Router();
 
@@ -124,35 +125,37 @@ router.get('/:id/members', async (req: AuthRequest, res: Response): Promise<void
 // @desc    Add a new member to a tree
 router.post('/:id/members', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const {
-      firstName, lastName, gender,
-      birthDate, birthPlace,
-      deathDate, deathPlace,
-      generation, heritage,
-      fatherId, motherId,
-      spouseIds, childrenIds,
-      notes, profilePhoto
-    } = req.body;
+   const {
+  firstName, lastName, gender,
+  birthDate, birthPlace,
+  deathDate, deathPlace,
+  generation, heritage,
+  fatherId, motherId,
+  spouseIds, childrenIds,
+  notes, profilePhoto,
+  branch
+} = req.body;
 
-    const member = new FamilyMember({
-      firstName,
-      lastName,
-      gender,
-      birthDate,
-      birthPlace,
-      deathDate,
-      deathPlace,
-      generation,
-      heritage,
-      fatherId,
-      motherId,
-      spouseIds,
-      childrenIds,
-      notes,
-      profilePhoto,
-      treeId: req.params.id,
-      citations: []
-    });
+   const member = new FamilyMember({
+  firstName,
+  lastName,
+  gender,
+  birthDate,
+  birthPlace,
+  deathDate,
+  deathPlace,
+  generation,
+  heritage,
+  fatherId: fatherId || undefined,
+  motherId: motherId || undefined,
+  branch: branch || undefined,
+  spouseIds: spouseIds?.filter((id: string) => id !== '') || [],
+  childrenIds: childrenIds?.filter((id: string) => id !== '') || [],
+  notes,
+  profilePhoto,
+  treeId: req.params.id,
+  citations: []
+});
 
     await member.save();
 
@@ -164,6 +167,7 @@ router.post('/:id/members', async (req: AuthRequest, res: Response): Promise<voi
 
     res.status(201).json(member);
   } catch (error) {
+    console.error('❌ Member save error:', error);  // ← add this line
     res.status(500).json({ error: (error as Error).message });
   }
 });
