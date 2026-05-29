@@ -447,8 +447,8 @@ function SlideCanvas({ slide, members, p, f, isEditing, onUpdate, onCite }: {
     </button>
   );
 
-  
   // Replace the tree slides section:
+  
 if (slide.type === 'pedigree') {
   return (
     <div style={{ ...base, flexDirection: 'column' }}>
