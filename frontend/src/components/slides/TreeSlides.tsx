@@ -53,32 +53,91 @@ export function FullPedigreeTree({ members, palette, font }: {
 
     // Position nodes
  // Replace the positioning logic in FullPedigreeTree:
-const HORIZONTAL_GAP = 220;
-const VERTICAL_GAP = 180;
+// Replace the entire nodes/edges useMemo in FullPedigreeTree:
+const { nodes, edges } = useMemo(() => {
+  if (members.length === 0) return { nodes: [], edges: [] };
 
-Object.entries(genGroups).forEach(([gen, genMembers]) => {
-  const g = parseInt(gen);
-  const count = genMembers.length;
-  const startX = -((count - 1) * HORIZONTAL_GAP) / 2;
+  const HORIZONTAL_GAP = 200;
+  const VERTICAL_GAP = 200;
 
-  genMembers.forEach((member, i) => {
-    nodes.push({
-      id: member._id,
-      type: 'artisticNode',
-      position: {
-        x: startX + i * HORIZONTAL_GAP,
-        y: (g - 1) * VERTICAL_GAP
-      },
-      data: {
-        name: `${member.firstName} ${member.lastName}`,
-        lifespan: `${member.birthDate || '?'} — ${member.deathDate || '†?'}`,
-        photoUrl: member.photoUrl,
-        heritage: member.heritage,
-        gender: member.gender,
+  // Group by generation
+  const genGroups: Record<number, IFamilyMember[]> = {};
+  members.forEach(m => {
+    const g = m.generation || 1;
+    if (!genGroups[g]) genGroups[g] = [];
+    genGroups[g].push(m);
+  });
+
+  const nodes: Node[] = [];
+  const edges: Edge[] = [];
+
+  // Find max members in any generation for centering
+  const maxCount = Math.max(...Object.values(genGroups).map(g => g.length));
+
+  Object.entries(genGroups).forEach(([gen, genMembers]) => {
+    const g = parseInt(gen);
+    const count = genMembers.length;
+    // Center each generation relative to the widest generation
+    const totalWidth = maxCount * HORIZONTAL_GAP;
+    const genWidth = count * HORIZONTAL_GAP;
+    const startX = (totalWidth - genWidth) / 2;
+
+    genMembers.forEach((member, i) => {
+      nodes.push({
+        id: member._id,
+        type: 'artisticNode',
+        position: {
+          x: startX + i * HORIZONTAL_GAP,
+          y: (g - 1) * VERTICAL_GAP
+        },
+        data: {
+          name: `${member.firstName} ${member.lastName}`,
+          lifespan: `${member.birthDate || '?'} — ${member.deathDate || '†?'}`,
+          photoUrl: member.photoUrl,
+          heritage: member.heritage,
+          gender: member.gender,
+        }
+      });
+    });
+  });
+
+  // Edges
+  members.forEach(member => {
+    if (member.fatherId && nodes.find(n => n.id === member.fatherId)) {
+      edges.push({
+        id: `f-${member.fatherId}-${member._id}`,
+        source: member.fatherId,
+        target: member._id,
+        type: 'fluidEdge',
+        data: { relationshipType: 'parent' }
+      });
+    }
+    if (member.motherId && nodes.find(n => n.id === member.motherId)) {
+      edges.push({
+        id: `m-${member.motherId}-${member._id}`,
+        source: member.motherId,
+        target: member._id,
+        type: 'fluidEdge',
+        data: { relationshipType: 'parent' }
+      });
+    }
+    member.spouseIds?.forEach(spouseId => {
+      if (!nodes.find(n => n.id === spouseId)) return;
+      const edgeId = [member._id, spouseId].sort().join('-spouse-');
+      if (!edges.find(e => e.id === edgeId)) {
+        edges.push({
+          id: edgeId,
+          source: member._id,
+          target: spouseId,
+          type: 'fluidEdge',
+          data: { relationshipType: 'spouse' }
+        });
       }
     });
   });
-});
+
+  return { nodes, edges };
+}, [members]);
 
     // Parent-child edges
     members.forEach(member => {
