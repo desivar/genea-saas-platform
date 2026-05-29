@@ -52,32 +52,33 @@ export function FullPedigreeTree({ members, palette, font }: {
     });
 
     // Position nodes
-    const HORIZONTAL_GAP = 200;
-    const VERTICAL_GAP = 160;
+ // Replace the positioning logic in FullPedigreeTree:
+const HORIZONTAL_GAP = 220;
+const VERTICAL_GAP = 180;
 
-    Object.entries(genGroups).forEach(([gen, genMembers]) => {
-      const g = parseInt(gen);
-      const totalWidth = genMembers.length * HORIZONTAL_GAP;
-      const startX = -totalWidth / 2;
+Object.entries(genGroups).forEach(([gen, genMembers]) => {
+  const g = parseInt(gen);
+  const count = genMembers.length;
+  const startX = -((count - 1) * HORIZONTAL_GAP) / 2;
 
-      genMembers.forEach((member, i) => {
-        nodes.push({
-          id: member._id,
-          type: 'artisticNode',
-          position: {
-            x: startX + i * HORIZONTAL_GAP,
-            y: (g - 1) * VERTICAL_GAP
-          },
-          data: {
-            name: `${member.firstName} ${member.lastName}`,
-            lifespan: `${member.birthDate || '?'} — ${member.deathDate || '†?'}`,
-            photoUrl: member.photoUrl,
-            heritage: member.heritage,
-            gender: member.gender,
-          }
-        });
-      });
+  genMembers.forEach((member, i) => {
+    nodes.push({
+      id: member._id,
+      type: 'artisticNode',
+      position: {
+        x: startX + i * HORIZONTAL_GAP,
+        y: (g - 1) * VERTICAL_GAP
+      },
+      data: {
+        name: `${member.firstName} ${member.lastName}`,
+        lifespan: `${member.birthDate || '?'} — ${member.deathDate || '†?'}`,
+        photoUrl: member.photoUrl,
+        heritage: member.heritage,
+        gender: member.gender,
+      }
     });
+  });
+});
 
     // Parent-child edges
     members.forEach(member => {
