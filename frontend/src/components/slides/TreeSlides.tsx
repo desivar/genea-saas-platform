@@ -3,6 +3,7 @@ import ReactFlow, {
   Background,
   type Node,
   type Edge,
+  Position,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import ArtisticNode from '../ArtisticNode';
@@ -96,16 +97,40 @@ export function FullPedigreeTree({ members, palette, font }: {
 
     members.forEach(member => {
       if (member.fatherId && nodes.find(n => n.id === member.fatherId)) {
-        edges.push({ id: `f-${member.fatherId}-${member._id}`, source: member.fatherId, target: member._id, type: 'fluidEdge', data: { relationshipType: 'parent' } });
+        edges.push({ 
+  id: `f-${member.fatherId}-${member._id}`, 
+  source: member.fatherId, 
+  target: member._id, 
+  type: 'fluidEdge',
+  sourcePosition: Position.Bottom,
+  targetPosition: Position.Top,
+  data: { relationshipType: 'parent' } 
+} as Edge);
       }
       if (member.motherId && nodes.find(n => n.id === member.motherId)) {
-        edges.push({ id: `m-${member.motherId}-${member._id}`, source: member.motherId, target: member._id, type: 'fluidEdge', data: { relationshipType: 'parent' } });
+        edges.push({ 
+  id: `m-${member.motherId}-${member._id}`, 
+  source: member.motherId, 
+  target: member._id, 
+  type: 'fluidEdge',
+  sourcePosition: Position.Bottom,
+  targetPosition: Position.Top,
+  data: { relationshipType: 'parent' } 
+} as Edge);
       }
       member.spouseIds?.forEach(spouseId => {
         if (!nodes.find(n => n.id === spouseId)) return;
         const edgeId = [member._id, spouseId].sort().join('-spouse-');
         if (!edges.find(e => e.id === edgeId)) {
-          edges.push({ id: edgeId, source: member._id, target: spouseId, type: 'fluidEdge', data: { relationshipType: 'spouse' } });
+          edges.push({
+            id: edgeId,
+            source: member._id,
+            target: spouseId,
+            type: 'fluidEdge',
+            sourcePosition: Position.Right,
+            targetPosition: Position.Left,
+            data: { relationshipType: 'spouse' },
+          } as Edge);
         }
       });
     });
