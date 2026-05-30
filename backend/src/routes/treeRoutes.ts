@@ -132,7 +132,7 @@ router.post('/:id/members', async (req: AuthRequest, res: Response): Promise<voi
   generation, heritage,
   fatherId, motherId,
   spouseIds, childrenIds,
-  notes, profilePhoto,
+  notes, photoUrl
   branch
 } = req.body;
 
@@ -152,7 +152,7 @@ router.post('/:id/members', async (req: AuthRequest, res: Response): Promise<voi
   spouseIds: spouseIds?.filter((id: string) => id !== '') || [],
   childrenIds: childrenIds?.filter((id: string) => id !== '') || [],
   notes,
-  profilePhoto,
+  photoUrl,
   treeId: req.params.id,
   citations: []
 });
